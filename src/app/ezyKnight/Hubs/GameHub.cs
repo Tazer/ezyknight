@@ -32,7 +32,7 @@ namespace ezyKnight.Hubs
 
             Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Color = color });
             Groups.Add(Context.ConnectionId, "Players");
-            return Clients.Caller.joined(Players.ToArray());
+            return Clients.Group("Players").joined(Players.ToArray());
         }
 
         public Task Send(string message)
@@ -46,6 +46,9 @@ namespace ezyKnight.Hubs
             {
                 return Clients.Caller.addChatMessage("Player hasnt joined");
             }
+
+            if (Players.Any(p => p.Value.X == x && p.Value.Y == y))
+                return Clients.Caller.collision();
 
             var player = Players[Context.ConnectionId];
             player.X = x;

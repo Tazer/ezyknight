@@ -47,6 +47,7 @@
 
             gameHub.client.joined = function (result) {
                 console.log(result);
+                players = [];
                 $.each(result, function () {
                     players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y });
                     drawPlayer(this.Value.X, this.Value.Y, this.Value.Color);
