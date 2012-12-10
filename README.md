@@ -8,6 +8,3 @@ How to setup node with webmatrix
 =========
 http://www.hanselman.com/blog/WebMatrixAndNodejsTheEasiestWayToGetStartedWithNodeOnWindows.aspx  
   
-Itemtracker & Board
-=========
-http://ezypirate.myjetbrains.com
