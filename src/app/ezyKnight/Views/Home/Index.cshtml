@@ -57,6 +57,8 @@
                 $("#chat").append("<li>" + message + "</li>");
             };
 
+            
+
             gameHub.client.moved = function (player) {
                 console.log(player);
                 $.each(players, function() {
@@ -120,5 +122,10 @@
             
             player.fillRect(x, y, 32, 32);
         };
+
+        $(function () {
+            alert("hej");
+        });
+
     </script>
 }
