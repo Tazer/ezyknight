@@ -1,0 +1,54 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ezyKnight</h2>
+
+<ul id="chat">
+</ul>
+<input type="text" id="chatMessage" />
+<input type="button" id="chatButton" value="Send" />
+
+
+<br />
+<br />
+Playername:
+<input type="text" id="playerName" />
+<input type="button" id="submitPlayerName" value="Submit" />
+@section script{
+    <script language="javascript">
+        $(function () {
+            $.connection.hub.start().done(function () { console.log("Now connected!"); }).fail(function () { console.log("Could not Connect!"); });
+            var gameHub = $.connection.gameHub;
+
+            $("#submitPlayerName").click(function () {
+                gameHub.server.join($("#playerName").val()).fail(function (error) {
+                    console.log(error);
+                });
+            });
+
+            gameHub.client.joined = function (id) {
+                $("#chat").append("<li>" + 'Player joined ' + id + "</li>");
+            };
+            gameHub.client.addChatMessage = function (message) {
+                $("#chat").append("<li>" + message + "</li>");
+            };
+
+            $("#chatButton").click(function () {
+                var message = $("#chatMessage").val();
+                $("#chat").append("<li>You: " + message + "</li>");
+                gameHub.server.send(message)
+                .done(function (result) {
+
+                })
+                .fail(function (error) {
+                    console.log(error);
+                });
+            });
+
+        });
+    </script>
+}
