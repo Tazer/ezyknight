@@ -1,7 +1,7 @@
 ezyknight
 =========
 
-Player vs Player game with pirate theme. Using SignalR(MVC) + Client javascript
+Player vs Player game with knight theme. Using SignalR(MVC) + Client javascript
    
   
 Resources
