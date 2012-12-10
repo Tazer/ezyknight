@@ -10,6 +10,8 @@ namespace ezyKnight.Hubs
     public class Player
     {
         public string Name { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 
 
@@ -21,6 +23,11 @@ namespace ezyKnight.Hubs
 
         public Task Join(string name)
         {
+            if (Players.Any(x => x.Value.Name == name))
+            {
+                return Clients.Caller.addChatMessage("Player with that name already exsists");
+            }
+
             Players.Add(Context.ConnectionId, new Player() { Name = name });
             return Groups.Add(Context.ConnectionId, "Players");
         }
