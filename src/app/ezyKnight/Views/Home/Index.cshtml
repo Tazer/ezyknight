@@ -34,7 +34,7 @@
         $(function () {
             $.connection.hub.start().done(function () { console.log("Now connected!"); }).fail(function () { console.log("Could not Connect!"); });
             var gameHub = $.connection.gameHub;
-
+            console.log(gameHub.client);
             $("#submitPlayerName").click(function () {
                 gameHub.server.join($("#playerName").val(), $("#playerColor").val()).done(function (result) {
 
@@ -47,6 +47,7 @@
 
             gameHub.client.joined = function (result) {
                 console.log(result);
+                clearPlayers();
                 players = [];
                 $.each(result, function () {
                     players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y });
@@ -56,18 +57,21 @@
             gameHub.client.addChatMessage = function (message) {
                 $("#chat").append("<li>" + message + "</li>");
             };
-
-            gameHub.client.moved = function (player) {
+            gameHub.client.collision = function (player) {
                 console.log(player);
-                $.each(players, function() {
+                playerX = player.X;
+                playerY = player.Y;
+            };
+            gameHub.client.moved = function (player) {
+                $.each(players, function () {
                     if (this.id == player.Id) {
+                        console.log(player);
                         this.x = player.X;
                         this.y = player.Y;
                     }
                 });
                 clearPlayers();
                 $.each(players, function () {
-                    console.log(this);
                     drawPlayer(this.x, this.y, this.color);
                 });
             };
@@ -103,7 +107,9 @@
                 }
 
                 else { }
-                gameHub.server.move(playerX, playerY);
+                console.log(playerX);
+                console.log(playerY);
+                gameHub.server.move(playerX, playerY).fail(function (error) { console.log(error); });
             };
 
         });
@@ -117,7 +123,7 @@
             var canvas = document.getElementById("gameArea");
             var player = canvas.getContext("2d");
             player.fillStyle = color;
-            
+
             player.fillRect(x, y, 32, 32);
         };
     </script>

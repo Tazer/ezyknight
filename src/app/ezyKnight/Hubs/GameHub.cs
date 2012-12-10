@@ -21,7 +21,6 @@ namespace ezyKnight.Hubs
     public class GameHub : Hub
     {
         public static IDictionary<string, Player> Players = new Dictionary<string, Player>();
-        private string Motd = "Welcome to EzyKnight";
 
         public Task Join(string name, string color)
         {
@@ -46,11 +45,11 @@ namespace ezyKnight.Hubs
             {
                 return Clients.Caller.addChatMessage("Player hasnt joined");
             }
+            var player = Players[Context.ConnectionId];
 
             if (Players.Any(p => p.Value.X == x && p.Value.Y == y))
-                return Clients.Caller.collision();
-
-            var player = Players[Context.ConnectionId];
+                return Clients.Caller.collision(player);
+           
             player.X = x;
             player.Y = y;
             return Clients.Group("Players").moved(player);
