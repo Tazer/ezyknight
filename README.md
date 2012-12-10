@@ -1,12 +1,8 @@
-ezypirate
+ezyknight
 =========
 
-Player vs Player game with pirate theme. Using NodeJs + Client javascript
-  
-  
-How to setup node with webmatrix
-=========
-http://www.hanselman.com/blog/WebMatrixAndNodejsTheEasiestWayToGetStartedWithNodeOnWindows.aspx  
+Player vs Player game with pirate theme. Using SignalR(MVC) + Client javascript
+   
   
 Resources
 =========
