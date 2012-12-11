@@ -128,8 +128,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\game.css" />
-    <Content Include="Content\player.gif" />
     <Content Include="Content\player_sprite.gif" />
+    <Content Include="Content\player_sprite_large.gif" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\ezyknight.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />

@@ -20,8 +20,8 @@ namespace ezyKnight.Hubs
 
     public class GameHub : Hub
     {
-        private const int MaxX = 500;
-        private const int MaxY = 500;
+        private const int MaxX = 960;
+        private const int MaxY = 422;
 
 
         public Task Join(string name, int userClass)
@@ -33,7 +33,7 @@ namespace ezyKnight.Hubs
 
             var rndClass = new Random().Next(0, 4);
 
-            MvcApplication.Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Class = userClass});
+            MvcApplication.Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Class = userClass });
             Groups.Add(Context.ConnectionId, "Players");
             return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
         }
@@ -45,7 +45,7 @@ namespace ezyKnight.Hubs
 
         public Task Send(string message)
         {
-            return Clients.OthersInGroup("Players").addChatMessage(MvcApplication.Players[Context.ConnectionId].Name + " -> " + message);
+            return Clients.OthersInGroup("Players").addChatMessage(string.Format("[{0}] {1} -> {2}", DateTime.Now, MvcApplication.Players[Context.ConnectionId].Name, message));
         }
 
         public Task Move(int x, int y)

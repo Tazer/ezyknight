@@ -6,45 +6,50 @@
 
 <h2>ezyKnight</h2>
 <img src="/Content/player_sprite.gif" id="imgPlayer" style="display: none;" />
-<div>
-    <canvas id="gameArea" height="500" width="500" />
-    ​​​​​​​​​​​​​​​
+<img src="/Content/map_bg.gif" id="imgMapbg" style="display: none;" />
+<div id="game-wrapper">
+
+    <div id="class-wrapper">
+        <h3>Choose your Warrior!</h3>
+        <div class="selectClass">
+            <ul>
+                <li>
+                    <p class="playerclass red" data-id="3"></p>
+                </li>
+                <li>
+                    <p class="playerclass green" data-id="4"></p>
+                </li>
+                <li>
+                    <p class="playerclass gold" data-id="1"></p>
+                </li>
+                <li>
+                    <p class="playerclass blue" data-id="2"></p>
+                </li>
+                <li>
+                    <p class="playerclass brown" data-id="0"></p>
+                </li>
+            </ul>
+            <div style="clear: both;"></div>
+        </div>
+        <div>
+            Hero name:
+            <input type="text" id="playerName" /><input type="button" id="submitPlayerName" value="JOIN" /><input type="button" value="Send join to everyone" id="sendPlayerCollection" style="display: none;" />
+        </div>
+    </div>
+    <canvas id="background" height="448" width="960" style="z-index: 1"></canvas>
+    <canvas id="gameArea" height="448" width="960" style="z-index: 2"></canvas>
+    @*<canvas id="hud" height="448" width="960"></canvas>*@
 </div>
-<div>
-    <ul id="chat">
-    </ul>
-    <input type="text" id="chatMessage" />
-    <input type="button" id="chatButton" value="Send" />
-
-
-    <br />
-    <br />
-
-    <div class="selectClass">
-        <ul>
-            <li>
-                <p class="playerclass red" data-id="3"></p>
-            </li>
-            <li>
-                <p class="playerclass green" data-id="4"></p>
-            </li>
-            <li>
-                <p class="playerclass gold" data-id="1"></p>
-            </li>
-            <li>
-                <p class="playerclass blue" data-id="2"></p>
-            </li>
-            <li>
-                <p class="playerclass brown" data-id="0"></p>
-            </li>
-        </ul>
-        <div style="clear: both;"></div>
-    </div>
-    <div>
-        Playername:
-    <input type="text" id="playerName" /><input type="button" id="submitPlayerName" value="Submit" /><input type="button" value="Send join to everyone" id="sendPlayerCollection" />
-    </div>
-
+<div id="chat-wrapper">
+    <fieldset>
+        <legend>Chat</legend>
+        <input type="text" id="chatMessage" />
+        <input type="button" id="chatButton" value="Send" />
+        <div id="chat-box">
+            <ul id="chat">
+            </ul>
+        </div>
+    </fieldset>
 </div>
 @section script{
     <script language="javascript">
@@ -74,23 +79,23 @@
 
             $.connection.hub.start().done(function () { console.log("Now connected!"); }).fail(function () { console.log("Could not Connect!"); });
             var gameHub = $.connection.gameHub;
-            console.log(gameHub.client);
+            //console.log(gameHub.client);
             $("#submitPlayerName").click(function () {
                 gameHub.server.join($("#playerName").val(), selectedClass).done(function (result) {
 
                     hasJoined = true;
-
+                    $("#sendPlayerCollection").click();
                 }).fail(function (error) {
                     console.log(error);
                 });
             });
 
             $("#sendPlayerCollection").click(function () {
+                $("#class-wrapper").hide();
                 gameHub.server.sendPlayers();
             });
 
             gameHub.client.joined = function (result) {
-                console.log(result);
                 players = [];
                 $.each(result, function () {
                     players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, skin: getSkinForClass(this.Value.Class) });
@@ -100,7 +105,6 @@
                 $("#chat").append("<li>" + message + "</li>");
             };
             gameHub.client.collision = function (player) {
-                console.log(player);
                 playerX = player.X;
                 playerY = player.Y;
             };
@@ -121,7 +125,6 @@
 
                     })
                     .fail(function (error) {
-                        console.log(error);
                     });
             });
 
@@ -129,7 +132,6 @@
                 if (hasJoined == false) {
                     return;
                 }
-                console.log(e.keyCode);
                 switch (e.keyCode) {
                     case 87: //W
                         playerY -= config.tileSize;
@@ -154,7 +156,7 @@
         function clearPlayers() {
             var canvas = document.getElementById("gameArea");
             var player = canvas.getContext("2d");
-            player.clearRect(0, 0, 500, 500);
+            player.clearRect(0, 0, 960, 448);
         }
         function reDraw() {
             //Clear canvas
@@ -170,7 +172,11 @@
                 var playerImage = document.getElementById("imgPlayer");
                 player.drawImage(playerImage, this.skin.x, this.skin.y, config.tileSize, config.tileSize, this.x, this.y, config.tileSize, config.tileSize);
                 player.fillStyle = this.skin.color;
-                player.font = "15px Verdana"
+                player.font = "15px Verdana";
+                player.shadowOffsetX = 0;
+                player.shadowOffsetY = 0;
+                player.shadowBlur = 2;
+                player.shadowColor = 'rgba(0, 0, 0, 1)';
                 player.fillText(this.name, getNamePlacement(this.name, this.x), this.y);
             });
 
@@ -188,6 +194,13 @@
         }
 
         function init() {
+
+            var canvas = document.getElementById("background");
+            var ctx = canvas.getContext("2d");
+            var map = document.getElementById("imgMapbg");
+            ctx.drawImage(map, 0, 0, 960, 448);
+
+
             setInterval(function () { reDraw() }, config.refreshRate);
         }
 
