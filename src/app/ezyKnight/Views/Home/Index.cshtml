@@ -5,7 +5,7 @@
 }
 
 <h2>ezyKnight</h2>
-<img src="/Content/player.gif" id="imgPlayer" style="display: none;"/>
+<img src="/Content/player_sprite.gif" id="imgPlayer" style="display: none;" />
 <div>
     <canvas id="gameArea" height="500" width="500" />
     ​​​​​​​​​​​​​​​
@@ -19,12 +19,32 @@
 
     <br />
     <br />
-    Playername:
-    <input type="text" id="playerName" /><br />
-    Color =
-    <input type="text" id="playerColor" />
-    <input type="button" id="submitPlayerName" value="Submit" /><br />
-    <input type="button" value="Send join to everyone" id="sendPlayerCollection" />
+
+    <div class="selectClass">
+        <ul>
+            <li>
+                <p class="playerclass red" data-id="3"></p>
+            </li>
+            <li>
+                <p class="playerclass green" data-id="4"></p>
+            </li>
+            <li>
+                <p class="playerclass gold" data-id="1"></p>
+            </li>
+            <li>
+                <p class="playerclass blue" data-id="2"></p>
+            </li>
+            <li>
+                <p class="playerclass brown" data-id="0"></p>
+            </li>
+        </ul>
+        <div style="clear: both;"></div>
+    </div>
+    <div>
+        Playername:
+    <input type="text" id="playerName" /><input type="button" id="submitPlayerName" value="Submit" /><input type="button" value="Send join to everyone" id="sendPlayerCollection" />
+    </div>
+
 </div>
 @section script{
     <script language="javascript">
@@ -34,16 +54,29 @@
             refreshRate: 1000 / 30 // ~30fps
         };
 
+
+        var selectedClass = 0;
+        var classes = [{ x: 0, y: 0, color: '#9a805d' }, { x: 26, y: 0, color: '#cbc42c' }, { x: 52, y: 0, color: '#5d7e9a' }, { x: 78, y: 0, color: '#c92e2e' }, { x: 104, y: 0, color: '#5d9a60' }];
+
+
         var playerX = 0;
         var playerY = 0;
         var players = [];
         var hasJoined = false;
         $(function () {
+
+            $(".playerclass").click(function () {
+                $(".playerclass").removeClass("active");
+                $(this).addClass("active");
+                selectedClass = $(this).data("id");
+            });
+
+
             $.connection.hub.start().done(function () { console.log("Now connected!"); }).fail(function () { console.log("Could not Connect!"); });
             var gameHub = $.connection.gameHub;
             console.log(gameHub.client);
             $("#submitPlayerName").click(function () {
-                gameHub.server.join($("#playerName").val(), $("#playerColor").val()).done(function (result) {
+                gameHub.server.join($("#playerName").val(), selectedClass).done(function (result) {
 
                     hasJoined = true;
 
@@ -60,7 +93,7 @@
                 console.log(result);
                 players = [];
                 $.each(result, function () {
-                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, color: this.Value.Color });
+                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, skin: getSkinForClass(this.Value.Class) });
                 });
             };
             gameHub.client.addChatMessage = function (message) {
@@ -126,27 +159,33 @@
         function reDraw() {
             //Clear canvas
             clearPlayers();
-            
+
             var canvas = document.getElementById("gameArea");
             //Draw background;
-            
+
 
             //Draw Players and their names
             $.each(players, function () {
                 var player = canvas.getContext("2d");
                 var playerImage = document.getElementById("imgPlayer");
-
-                player.drawImage(playerImage, this.x, this.y, config.tileSize, config.tileSize);
-                //player.fillRect(this.x, this.y, config.tileSize, config.tileSize);
-                player.fillStyle = this.color;
+                player.drawImage(playerImage, this.skin.x, this.skin.y, config.tileSize, config.tileSize, this.x, this.y, config.tileSize, config.tileSize);
+                player.fillStyle = this.skin.color;
                 player.font = "15px Verdana"
-                player.fillText(this.name, this.x, this.y - config.tileSize);
+                player.fillText(this.name, getNamePlacement(this.name, this.x), this.y);
             });
 
             //Draw hud
 
 
         };
+
+        function getNamePlacement(name, x) {
+            return x - (name.length * 2);
+        }
+
+        function getSkinForClass(classId) {
+            return classes[classId];
+        }
 
         function init() {
             setInterval(function () { reDraw() }, config.refreshRate);

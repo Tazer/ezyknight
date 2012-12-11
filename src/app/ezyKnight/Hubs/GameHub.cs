@@ -11,9 +11,9 @@ namespace ezyKnight.Hubs
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Color { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public int Class { get; set; }
     }
 
 
@@ -24,14 +24,16 @@ namespace ezyKnight.Hubs
         private const int MaxY = 500;
 
 
-        public Task Join(string name, string color)
+        public Task Join(string name, int userClass)
         {
             if (MvcApplication.Players.Any(x => x.Value.Name == name))
             {
                 return Clients.Caller.addChatMessage("Player with that name already exsists");
             }
 
-            MvcApplication.Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Color = color });
+            var rndClass = new Random().Next(0, 4);
+
+            MvcApplication.Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Class = userClass});
             Groups.Add(Context.ConnectionId, "Players");
             return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
         }

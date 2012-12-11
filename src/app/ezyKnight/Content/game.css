@@ -1,2 +1,49 @@
 ﻿body {
 }
+
+
+div.selectClass ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+    div.selectClass ul li {
+        float: left;
+    }
+
+.playerclass {
+    background: url("/Content/player_sprite.gif");
+    height: 26px;
+    width: 26px;
+    display: block;
+    border: 2px solid transparent;
+}
+
+    .playerclass:hover {
+        border: 2px solid #bbb;
+    }
+
+    .playerclass.active {
+        border: 2px solid #000;
+    }
+
+    .playerclass.brown {
+        background-position: 0 0;
+    }
+
+    .playerclass.gold {
+        background-position: -26px 0;
+    }
+
+    .playerclass.blue {
+        background-position: -52px 0;
+    }
+
+    .playerclass.red {
+        background-position: -78px 0;
+    }
+
+    .playerclass.green {
+        background-position: -104px 0;
+    }
