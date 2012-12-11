@@ -11,46 +11,57 @@ namespace ezyKnight.Hubs
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Color { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public int Class { get; set; }
     }
 
 
 
     public class GameHub : Hub
     {
-        public static IDictionary<string, Player> Players = new Dictionary<string, Player>();
-        private string Motd = "Welcome to EzyKnight";
+        private const int MaxX = 500;
+        private const int MaxY = 500;
 
-        public Task Join(string name, string color)
+
+        public Task Join(string name, int userClass)
         {
-            if (Players.Any(x => x.Value.Name == name))
+            if (MvcApplication.Players.Any(x => x.Value.Name == name))
             {
                 return Clients.Caller.addChatMessage("Player with that name already exsists");
             }
 
-            Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Color = color });
+            var rndClass = new Random().Next(0, 4);
+
+            MvcApplication.Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Class = userClass});
             Groups.Add(Context.ConnectionId, "Players");
-            return Clients.Group("Players").joined(Players.ToArray());
+            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
+        }
+
+        public Task SendPlayers()
+        {
+            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
         }
 
         public Task Send(string message)
         {
-            return Clients.OthersInGroup("Players").addChatMessage(Players[Context.ConnectionId].Name + " -> " + message);
+            return Clients.OthersInGroup("Players").addChatMessage(MvcApplication.Players[Context.ConnectionId].Name + " -> " + message);
         }
 
         public Task Move(int x, int y)
         {
-            if (!Players.ContainsKey(Context.ConnectionId))
+            if (!MvcApplication.Players.ContainsKey(Context.ConnectionId))
             {
                 return Clients.Caller.addChatMessage("Player hasnt joined");
             }
+            var player = MvcApplication.Players[Context.ConnectionId];
 
-            if (Players.Any(p => p.Value.X == x && p.Value.Y == y))
-                return Clients.Caller.collision();
+            if (MvcApplication.Players.Any(p => p.Value.X == x && p.Value.Y == y))
+                return Clients.Caller.collision(player);
 
-            var player = Players[Context.ConnectionId];
+            if (x < 0 || y < 0 || y > MaxY || x > MaxX)
+                return Clients.Caller.collision(player);
+
             player.X = x;
             player.Y = y;
             return Clients.Group("Players").moved(player);
@@ -59,6 +70,13 @@ namespace ezyKnight.Hubs
         public override Task OnConnected()
         {
             return Clients.Group("Players").newconnection(Context.ConnectionId);
+        }
+
+        public override Task OnDisconnected()
+        {
+            if (MvcApplication.Players.ContainsKey(Context.ConnectionId))
+                MvcApplication.Players.Remove(Context.ConnectionId);
+            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
         }
     }
 }
