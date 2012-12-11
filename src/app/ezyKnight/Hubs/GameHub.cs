@@ -22,7 +22,7 @@ namespace ezyKnight.Hubs
     {
         private const int MaxX = 500;
         private const int MaxY = 500;
-        
+
 
         public Task Join(string name, string color)
         {
@@ -68,6 +68,13 @@ namespace ezyKnight.Hubs
         public override Task OnConnected()
         {
             return Clients.Group("Players").newconnection(Context.ConnectionId);
+        }
+
+        public override Task OnDisconnected()
+        {
+            if (MvcApplication.Players.ContainsKey(Context.ConnectionId))
+                MvcApplication.Players.Remove(Context.ConnectionId);
+            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
         }
     }
 }
