@@ -55,7 +55,7 @@
                 clearPlayers();
                 players = [];
                 $.each(result, function () {
-                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y });
+                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y,color: this.Value.Color });
                     drawPlayer(this.Value.X, this.Value.Y, this.Value.Color);
                 });
             };
