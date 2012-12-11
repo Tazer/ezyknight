@@ -23,7 +23,8 @@
     <input type="text" id="playerName" /><br />
     Color =
     <input type="text" id="playerColor" />
-    <input type="button" id="submitPlayerName" value="Submit" />
+    <input type="button" id="submitPlayerName" value="Submit" /><br />
+    <input type="button" value="Send join to everyone" id="sendPlayerCollection"/>
 </div>
 @section script{
     <script language="javascript">
@@ -43,6 +44,10 @@
                 }).fail(function (error) {
                     console.log(error);
                 });
+            });
+
+            $("#sendPlayerCollection").click(function() {
+                gameHub.server.sendPlayers();
             });
 
             gameHub.client.joined = function (result) {
@@ -65,7 +70,6 @@
             gameHub.client.moved = function (player) {
                 $.each(players, function () {
                     if (this.id == player.Id) {
-                        console.log(player);
                         this.x = player.X;
                         this.y = player.Y;
                     }
