@@ -111,8 +111,10 @@
             gameHub.client.moved = function (player) {
                 $.each(players, function () {
                     if (this.id == player.Id) {
+                        console.log(player);
                         this.x = player.X;
                         this.y = player.Y;
+                        this.orientation = player.Orientation;
                     }
                 });
             };

@@ -14,6 +14,34 @@ namespace ezyKnight.Hubs
         public int X { get; set; }
         public int Y { get; set; }
         public int Class { get; set; }
+        public Orientation Orientation { get; set; }
+
+        public void MoveTo(int x, int y)
+        {
+            if (x > this.X)
+                Orientation = Orientation.Right;
+
+            if (x < this.X)
+                Orientation = Orientation.Left;
+
+            if (y < this.Y)
+                Orientation = Orientation.Up;
+
+            if (y > this.Y)
+                Orientation = Orientation.Down;
+
+
+            this.X = x;
+            this.Y = y;
+        }
+    }
+
+    public enum Orientation
+    {
+        Up = 0,
+        Down = 1,
+        Left = 2,
+        Right = 3,
     }
 
 
@@ -62,8 +90,7 @@ namespace ezyKnight.Hubs
             if (x < 0 || y < 0 || y > MaxY || x > MaxX)
                 return Clients.Caller.collision(player);
 
-            player.X = x;
-            player.Y = y;
+            player.MoveTo(x, y);
             return Clients.Group("Players").moved(player);
         }
 
