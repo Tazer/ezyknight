@@ -5,6 +5,7 @@
 }
 
 <h2>ezyKnight</h2>
+<img src="/Content/player.gif" id="imgPlayer" style="display: none;"/>
 <div>
     <canvas id="gameArea" height="500" width="500" />
     ​​​​​​​​​​​​​​​
@@ -122,21 +123,33 @@
             var player = canvas.getContext("2d");
             player.clearRect(0, 0, 500, 500);
         }
-        function drawPlayer() {
+        function reDraw() {
+            //Clear canvas
             clearPlayers();
+            
             var canvas = document.getElementById("gameArea");
+            //Draw background;
+            
+
+            //Draw Players and their names
             $.each(players, function () {
                 var player = canvas.getContext("2d");
+                var playerImage = document.getElementById("imgPlayer");
+
+                player.drawImage(playerImage, this.x, this.y, config.tileSize, config.tileSize);
+                //player.fillRect(this.x, this.y, config.tileSize, config.tileSize);
                 player.fillStyle = this.color;
-                player.fillRect(this.x, this.y, config.tileSize, config.tileSize);
                 player.font = "15px Verdana"
                 player.fillText(this.name, this.x, this.y - config.tileSize);
             });
 
+            //Draw hud
+
+
         };
 
         function init() {
-            setInterval(function () { drawPlayer() }, config.refreshRate);
+            setInterval(function () { reDraw() }, config.refreshRate);
         }
 
         $(function () {
