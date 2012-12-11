@@ -1,5 +1,4 @@
 ﻿@model dynamic
-
 @{
     ViewBag.Title = "title";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -24,10 +23,16 @@
     Color =
     <input type="text" id="playerColor" />
     <input type="button" id="submitPlayerName" value="Submit" /><br />
-    <input type="button" value="Send join to everyone" id="sendPlayerCollection"/>
+    <input type="button" value="Send join to everyone" id="sendPlayerCollection" />
 </div>
 @section script{
     <script language="javascript">
+
+        var config = {
+            tileSize: 26,
+            refreshRate: 1000 / 30 // ~30fps
+        };
+
         var playerX = 0;
         var playerY = 0;
         var players = [];
@@ -46,17 +51,15 @@
                 });
             });
 
-            $("#sendPlayerCollection").click(function() {
+            $("#sendPlayerCollection").click(function () {
                 gameHub.server.sendPlayers();
             });
 
             gameHub.client.joined = function (result) {
                 console.log(result);
-                clearPlayers();
                 players = [];
                 $.each(result, function () {
-                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y,color: this.Value.Color });
-                    drawPlayer(this.Value.X, this.Value.Y, this.Value.Color);
+                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, color: this.Value.Color });
                 });
             };
             gameHub.client.addChatMessage = function (message) {
@@ -74,10 +77,6 @@
                         this.y = player.Y;
                     }
                 });
-                clearPlayers();
-                $.each(players, function () {
-                    drawPlayer(this.x, this.y, this.color);
-                });
             };
 
             $("#chatButton").click(function () {
@@ -92,27 +91,27 @@
                     });
             });
 
-            document.onkeydown = function (e) {
+            document.onkeyup = function (e) {
                 if (hasJoined == false) {
                     return;
                 }
-
-                if (e.keyCode == 87) {
-                    playerY -= 32;
+                console.log(e.keyCode);
+                switch (e.keyCode) {
+                    case 87: //W
+                        playerY -= config.tileSize;
+                        break;
+                    case 65:
+                        playerX -= config.tileSize;
+                        break;
+                    case 83:
+                        playerY += config.tileSize;
+                        break;
+                    case 68:
+                        playerX += config.tileSize;
+                        break;
+                    default:
+                        break;
                 }
-                else if (e.keyCode == 65) {
-                    playerX -= 32;
-                }
-                else if (e.keyCode == 83) {
-                    playerY += 32;
-                }
-                else if (e.keyCode == 68) {
-                    playerX += 32;
-                }
-
-                else { }
-                console.log(playerX);
-                console.log(playerY);
                 gameHub.server.move(playerX, playerY).fail(function (error) { console.log(error); });
             };
 
@@ -123,12 +122,26 @@
             var player = canvas.getContext("2d");
             player.clearRect(0, 0, 500, 500);
         }
-        function drawPlayer(x, y, color) {
+        function drawPlayer() {
+            clearPlayers();
             var canvas = document.getElementById("gameArea");
-            var player = canvas.getContext("2d");
-            player.fillStyle = color;
+            $.each(players, function () {
+                var player = canvas.getContext("2d");
+                player.fillStyle = this.color;
+                player.fillRect(this.x, this.y, config.tileSize, config.tileSize);
+                player.font = "15px Verdana"
+                player.fillText(this.name, this.x, this.y - config.tileSize);
+            });
 
-            player.fillRect(x, y, 32, 32);
         };
+
+        function init() {
+            setInterval(function () { drawPlayer() }, config.refreshRate);
+        }
+
+        $(function () {
+            init();
+        });
+
     </script>
 }
