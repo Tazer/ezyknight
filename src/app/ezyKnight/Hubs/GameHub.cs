@@ -7,6 +7,14 @@ using Microsoft.AspNet.SignalR.Hubs;
 
 namespace ezyKnight.Hubs
 {
+    public class Spell
+    {
+        public string Name { get; set; }
+        public int Range { get; set; }
+        public int Speed { get; set; }
+        public Tuple<int, int> Damage { get; set; }
+    }
+
     public class Player
     {
         public string Id { get; set; }
@@ -15,6 +23,12 @@ namespace ezyKnight.Hubs
         public int Y { get; set; }
         public int Class { get; set; }
         public Orientation Orientation { get; set; }
+
+        public bool HasSpell(Spell spell)
+        {
+            //Handle logic here.
+            return true;
+        }
 
         public void MoveTo(int x, int y)
         {
@@ -33,6 +47,20 @@ namespace ezyKnight.Hubs
 
             this.X = x;
             this.Y = y;
+        }
+        public Tuple<int, int> Attack(Spell spell)
+        {
+            switch (Orientation)
+            {
+                case Orientation.Right:
+                    return Tuple.Create(X + spell.Range, Y);
+                case Orientation.Left:
+                    return Tuple.Create(X - spell.Range, Y);
+                case Orientation.Up:
+                    return Tuple.Create(X, Y - spell.Range);
+                case Orientation.Down:
+                    return Tuple.Create(X, Y + spell.Range);
+            }
         }
     }
 
@@ -74,6 +102,28 @@ namespace ezyKnight.Hubs
         public Task Send(string message)
         {
             return Clients.OthersInGroup("Players").addChatMessage(string.Format("[{0}] {1} -> {2}", DateTime.Now, MvcApplication.Players[Context.ConnectionId].Name, message));
+        }
+
+        public Task Attack(int spellId)
+        {
+            if (!MvcApplication.Players.ContainsKey(Context.ConnectionId))
+            {
+                return Clients.Caller.addChatMessage("Player hasnt joined");
+            }
+
+            //Hard coding one spell now.
+            var spell = new Spell() {Damage = Tuple.Create(10, 100), Name = "Melee",Range = 26,Speed = 100};
+            var player = MvcApplication.Players[Context.ConnectionId];
+
+            if(!player.HasSpell(spell))
+                return Clients.Caller.addChatMessage("You dont have that spell");
+
+
+
+            var attackCords = player.Attack(spell);
+
+
+            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
         }
 
         public Task Move(int x, int y)
