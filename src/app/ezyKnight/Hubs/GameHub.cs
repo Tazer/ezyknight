@@ -144,6 +144,8 @@ namespace ezyKnight.Hubs
             var spell = new Spell() { Damage = new Values(10, 100), Name = "Melee", Range = 26, Speed = 100 };
             var player = MvcApplication.Players[Context.ConnectionId];
 
+            if(player.IsDead)
+                return Clients.Caller.addChatMessage("You are DEAD!");
             if (!player.HasSpell(spell))
                 return Clients.Caller.addChatMessage("You dont have that spell");
 
