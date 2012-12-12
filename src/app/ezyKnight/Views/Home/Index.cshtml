@@ -56,10 +56,9 @@
 
         var config = {
             tileSize: 26,
-            refreshRate: 1000 / 60 // ~30fps
+            refreshRate: 1000 / 60,
+            walkingSpeed: 120
         };
-
-
 
         var selectedClass = 0;
         var classes = [{ x: 0, y: 0, color: '#9a805d' }, { x: 26, y: 0, color: '#cbc42c' }, { x: 52, y: 0, color: '#5d7e9a' }, { x: 78, y: 0, color: '#c92e2e' }, { x: 104, y: 0, color: '#5d9a60' }];
@@ -99,7 +98,7 @@
             gameHub.client.joined = function (result) {
                 players = [];
                 $.each(result, function () {
-                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, skin: getSkinForClass(this.Value.Class) });
+                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, newX: this.Value.X, newY: this.Value.Y, skin: getSkinForClass(this.Value.Class) });
                 });
             };
             gameHub.client.addChatMessage = function (message) {
@@ -112,9 +111,8 @@
             gameHub.client.moved = function (player) {
                 $.each(players, function () {
                     if (this.id == player.Id) {
-                        console.log(player);
-                        this.x = player.X;
-                        this.y = player.Y;
+                        this.newX = player.X;
+                        this.newY = player.Y;
                         this.orientation = player.Orientation;
                     }
                 });
@@ -156,18 +154,50 @@
 
         });
 
+        function animatePlayer(player) {
+            //orientation:  Up = 0, Down = 1, Left = 2,Right = 3
+            var tick = Math.round(config.tileSize / Math.round((config.walkingSpeed / config.refreshRate)));
+            console.log(player);
+            switch (player.orientation) {
+                case 0:
+                    if (player.y > player.newY)
+                        player.y-= tick;
+                    break;
+                case 1:
+                    if (player.y < player.newY)
+                        player.y+= tick;
+                    break;
+                case 2:
+                    if (player.x > player.newX)
+                        player.x-=tick;
+                    break;
+                case 3:
+                    if (player.x < player.newX)
+                        player.x+=tick;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         function clearPlayers() {
             var canvas = document.getElementById("gameArea");
             var player = canvas.getContext("2d");
             player.clearRect(0, 0, 960, 448);
         }
+
+        function updatePlayers() {
+            $.each(players, function () {
+                animatePlayer(this);
+            });
+        }
+
         function draw() {
             //Clear canvas
             clearPlayers();
 
             var canvas = document.getElementById("gameArea");
             //Draw background;
-
 
             //Draw Players and their names
             $.each(players, function () {
@@ -207,9 +237,10 @@
                         window.setTimeout(callback, config.refreshRate);
                     };
         })();
-        
-        function animate() {
-            requestAnimFrame(animate);
+
+        function gameloop() {
+            requestAnimFrame(gameloop);
+            updatePlayers();
             draw();
         }
 
@@ -220,7 +251,7 @@
             var map = document.getElementById("imgMapbg");
             ctx.drawImage(map, 0, 0, 960, 448);
 
-            animate();
+            gameloop();
         }
 
         $(function () {
