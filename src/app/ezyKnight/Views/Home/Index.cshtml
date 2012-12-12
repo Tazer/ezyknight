@@ -68,48 +68,49 @@
         var playerY = 0;
         var players = [];
         var hasJoined = false;
-        $(function () {
+        $(function() {
 
-            $(".playerclass").click(function () {
+            $(".playerclass").click(function() {
                 $(".playerclass").removeClass("active");
                 $(this).addClass("active");
                 selectedClass = $(this).data("id");
             });
 
 
-            $.connection.hub.start().done(function () { console.log("Now connected!"); }).fail(function () { console.log("Could not Connect!"); });
+            $.connection.hub.start().done(function() { console.log("Now connected!"); }).fail(function() { console.log("Could not Connect!"); });
             var gameHub = $.connection.gameHub;
             //console.log(gameHub.client);
-            $("#submitPlayerName").click(function () {
-                gameHub.server.join($("#playerName").val(), selectedClass).done(function (result) {
+            $("#submitPlayerName").click(function() {
+                gameHub.server.join($("#playerName").val(), selectedClass).done(function(result) {
 
                     hasJoined = true;
                     $("#sendPlayerCollection").click();
-                }).fail(function (error) {
+                }).fail(function(error) {
                     console.log(error);
                 });
             });
 
-            $("#sendPlayerCollection").click(function () {
+            $("#sendPlayerCollection").click(function() {
                 $("#class-wrapper").hide();
                 gameHub.server.sendPlayers();
             });
 
-            gameHub.client.joined = function (result) {
+            gameHub.client.joined = function(result) {
                 players = [];
                 $.each(result, function () {
-                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, newX: this.Value.X, newY: this.Value.Y, skin: getSkinForClass(this.Value.Class) });
+                    console.log(this.Value);
+                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, newX: this.Value.X, newY: this.Value.Y, skin: getSkinForClass(this.Value.Class), isDead: this.Value.IsDead });
                 });
             };
-            gameHub.client.addChatMessage = function (message) {
+            gameHub.client.addChatMessage = function(message) {
                 $("#chat").append("<li>" + message + "</li>");
             };
-            gameHub.client.collision = function (player) {
+            gameHub.client.collision = function(player) {
                 playerX = player.X;
                 playerY = player.Y;
             };
-            gameHub.client.moved = function (player) {
-                $.each(players, function () {
+            gameHub.client.moved = function(player) {
+                $.each(players, function() {
                     if (this.id == player.Id) {
                         this.newX = player.X;
                         this.newY = player.Y;
@@ -118,38 +119,45 @@
                 });
             };
 
-            $("#chatButton").click(function () {
+            $("#chatButton").click(function() {
                 var message = $("#chatMessage").val();
                 $("#chat").append("<li>You: " + message + "</li>");
                 gameHub.server.send(message)
-                    .done(function (result) {
+                    .done(function(result) {
 
                     })
-                    .fail(function (error) {
+                    .fail(function(error) {
                     });
             });
 
-            document.onkeyup = function (e) {
+            document.onkeyup = function(e) {
                 if (hasJoined == false) {
                     return;
                 }
+                console.log(e.keyCode);
                 switch (e.keyCode) {
-                    case 87: //W
-                        playerY -= config.tileSize;
-                        break;
-                    case 65:
-                        playerX -= config.tileSize;
-                        break;
-                    case 83:
-                        playerY += config.tileSize;
-                        break;
-                    case 68:
-                        playerX += config.tileSize;
-                        break;
-                    default:
-                        break;
+                case 87:
+//W
+                    playerY -= config.tileSize;
+                    break;
+                case 65:
+                    playerX -= config.tileSize;
+                    break;
+                case 83:
+                    playerY += config.tileSize;
+                    break;
+                case 68:
+                    playerX += config.tileSize;
+                    break;
+                default:
+                    break;
                 }
-                gameHub.server.move(playerX, playerY).fail(function (error) { console.log(error); });
+
+                if (e.keyCode == 49) {
+                    gameHub.server.attack(1);
+                } else {
+                    gameHub.server.move(playerX, playerY).fail(function(error) { console.log(error); });
+                }
             };
 
         });
@@ -157,26 +165,25 @@
         function animatePlayer(player) {
             //orientation:  Up = 0, Down = 1, Left = 2,Right = 3
             var tick = Math.round(config.tileSize / Math.round((config.walkingSpeed / config.refreshRate)));
-            console.log(player);
             switch (player.orientation) {
-                case 0:
-                    if (player.y > player.newY)
-                        player.y-= tick;
-                    break;
-                case 1:
-                    if (player.y < player.newY)
-                        player.y+= tick;
-                    break;
-                case 2:
-                    if (player.x > player.newX)
-                        player.x-=tick;
-                    break;
-                case 3:
-                    if (player.x < player.newX)
-                        player.x+=tick;
-                    break;
-                default:
-                    break;
+            case 0:
+                if (player.y > player.newY)
+                    player.y -= tick;
+                break;
+            case 1:
+                if (player.y < player.newY)
+                    player.y += tick;
+                break;
+            case 2:
+                if (player.x > player.newX)
+                    player.x -= tick;
+                break;
+            case 3:
+                if (player.x < player.newX)
+                    player.x += tick;
+                break;
+            default:
+                break;
             }
         }
 
@@ -187,7 +194,7 @@
         }
 
         function updatePlayers() {
-            $.each(players, function () {
+            $.each(players, function() {
                 animatePlayer(this);
             });
         }
@@ -200,7 +207,7 @@
             //Draw background;
 
             //Draw Players and their names
-            $.each(players, function () {
+            $.each(players, function() {
                 var player = canvas.getContext("2d");
                 var playerImage = document.getElementById("imgPlayer");
                 player.drawImage(playerImage, this.skin.x, this.skin.y, config.tileSize, config.tileSize, this.x, this.y, config.tileSize, config.tileSize);
@@ -210,13 +217,19 @@
                 player.shadowOffsetY = 0;
                 player.shadowBlur = 2;
                 player.shadowColor = 'rgba(0, 0, 0, 1)';
-                player.fillText(this.name, getNamePlacement(this.name, this.x), this.y);
+                if (this.isDead) {
+                    player.fillText(this.name + " DEAD", getNamePlacement(this.name + " DEAD", this.x), this.y);
+                } else {
+                    player.fillText(this.name, getNamePlacement(this.name, this.x), this.y);
+                }
             });
 
             //Draw hud
 
 
-        };
+        }
+
+        ;
 
         function getNamePlacement(name, x) {
             return x - (name.length * 2);
@@ -227,15 +240,15 @@
         }
 
 
-        window.requestAnimFrame = (function () {
+        window.requestAnimFrame = (function() {
             return window.requestAnimationFrame ||
-                    window.webkitRequestAnimationFrame ||
-                    window.mozRequestAnimationFrame ||
-                    window.oRequestAnimationFrame ||
-                    window.msRequestAnimationFrame ||
-                    function (/* function */ callback, /* DOMElement */ element) {
-                        window.setTimeout(callback, config.refreshRate);
-                    };
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function(/* function */ callback, /* DOMElement */ element) {
+                    window.setTimeout(callback, config.refreshRate);
+                };
         })();
 
         function gameloop() {
@@ -254,7 +267,7 @@
             gameloop();
         }
 
-        $(function () {
+        $(function() {
             init();
         });
 

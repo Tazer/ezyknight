@@ -7,12 +7,28 @@ using Microsoft.AspNet.SignalR.Hubs;
 
 namespace ezyKnight.Hubs
 {
+    public class Values
+    {
+        public Values()
+        {
+
+        }
+
+        public Values(int value1, int value2)
+        {
+            Value1 = value1;
+            Value2 = value2;
+        }
+        public int Value1 { get; set; }
+        public int Value2 { get; set; }
+    }
+
     public class Spell
     {
         public string Name { get; set; }
         public int Range { get; set; }
         public int Speed { get; set; }
-        public Tuple<int, int> Damage { get; set; }
+        public Values Damage { get; set; }
     }
 
     public class Player
@@ -23,6 +39,8 @@ namespace ezyKnight.Hubs
         public int Y { get; set; }
         public int Class { get; set; }
         public Orientation Orientation { get; set; }
+        public bool IsDead = false;
+        public Values Health = new Values(100, 100);
 
         public bool HasSpell(Spell spell)
         {
@@ -48,19 +66,30 @@ namespace ezyKnight.Hubs
             this.X = x;
             this.Y = y;
         }
-        public Tuple<int, int> Attack(Spell spell)
+        public Values Attack(Spell spell)
         {
             switch (Orientation)
             {
                 case Orientation.Right:
-                    return Tuple.Create(X + spell.Range, Y);
+                    return new Values(X + spell.Range, Y);
                 case Orientation.Left:
-                    return Tuple.Create(X - spell.Range, Y);
+                    return new Values(X - spell.Range, Y);
                 case Orientation.Up:
-                    return Tuple.Create(X, Y - spell.Range);
+                    return new Values(X, Y - spell.Range);
                 case Orientation.Down:
-                    return Tuple.Create(X, Y + spell.Range);
+                    return new Values(X, Y + spell.Range);
+                default:
+                    return null;
             }
+        }
+
+        public void Attacked(int damage)
+        {
+            Health.Value1 -= damage;
+
+            if (Health.Value1 <= 0)
+                IsDead = true;
+
         }
     }
 
@@ -112,15 +141,23 @@ namespace ezyKnight.Hubs
             }
 
             //Hard coding one spell now.
-            var spell = new Spell() {Damage = Tuple.Create(10, 100), Name = "Melee",Range = 26,Speed = 100};
+            var spell = new Spell() { Damage = new Values(10, 100), Name = "Melee", Range = 26, Speed = 100 };
             var player = MvcApplication.Players[Context.ConnectionId];
 
-            if(!player.HasSpell(spell))
+            if (!player.HasSpell(spell))
                 return Clients.Caller.addChatMessage("You dont have that spell");
 
 
 
             var attackCords = player.Attack(spell);
+
+            var enemy = MvcApplication.Players.FirstOrDefault(x => x.Value.X == attackCords.Value1 && x.Value.Y == attackCords.Value2);
+
+            if (enemy.Value == null)
+                return Clients.Caller.addChatMessage("You missed with " + spell.Name);
+
+            //TODO: Make some random shit here.
+            enemy.Value.Attacked(spell.Damage.Value2);
 
 
             return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
@@ -139,6 +176,9 @@ namespace ezyKnight.Hubs
 
             if (x < 0 || y < 0 || y > MaxY || x > MaxX)
                 return Clients.Caller.collision(player);
+
+            if (player.IsDead)
+                return Clients.Caller.addChatMessage("You are DEAD!");
 
             player.MoveTo(x, y);
             return Clients.Group("Players").moved(player);
