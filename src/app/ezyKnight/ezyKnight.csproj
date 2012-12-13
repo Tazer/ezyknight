@@ -132,6 +132,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\game.css" />
+    <Content Include="Content\map_bg.png" />
     <Content Include="Content\player_sprite.gif" />
     <Content Include="Content\player_sprite_large.gif" />
     <Content Include="Global.asax" />
@@ -147,6 +148,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Web.config" />
   </ItemGroup>
