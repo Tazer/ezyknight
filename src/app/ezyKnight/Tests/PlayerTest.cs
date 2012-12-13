@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using NUnit.Framework;
 using ezyKnight.Hubs;
+using ezyKnight.Models;
 
 namespace ezyKnight.Tests
 {

@@ -79,7 +79,6 @@
 
             $.connection.hub.start().done(function() { console.log("Now connected!"); }).fail(function() { console.log("Could not Connect!"); });
             var gameHub = $.connection.gameHub;
-            //console.log(gameHub.client);
             $("#submitPlayerName").click(function() {
                 gameHub.server.join($("#playerName").val(), selectedClass).done(function(result) {
 
@@ -97,9 +96,9 @@
 
             gameHub.client.joined = function(result) {
                 players = [];
+                console.log(result);
                 $.each(result, function () {
-                    console.log(this.Value);
-                    players.push({ id: this.Value.Id, name: this.Value.Name, x: this.Value.X, y: this.Value.Y, newX: this.Value.X, newY: this.Value.Y, skin: getSkinForClass(this.Value.Class), isDead: this.Value.IsDead });
+                    players.push({ id: this.Id, name: this.Name, x: this.X, y: this.Y, newX: this.X, newY: this.Y, skin: getSkinForClass(this.Class), isDead: this.IsDead });
                 });
             };
             gameHub.client.addChatMessage = function(message) {
