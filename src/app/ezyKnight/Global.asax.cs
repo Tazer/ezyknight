@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using ezyKnight.Hubs;
+using ezyKnight.Models;
 
 namespace ezyKnight
 {

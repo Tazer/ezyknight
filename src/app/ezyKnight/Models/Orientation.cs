@@ -1,4 +1,4 @@
-﻿namespace ezyKnight.Hubs
+﻿namespace ezyKnight.Models
 {
     public enum Orientation
     {

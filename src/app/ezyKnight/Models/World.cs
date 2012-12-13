@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Timers;
+using ezyKnight.Events;
 
-namespace ezyKnight.Hubs
+namespace ezyKnight.Models
 {
     public class World
     {
@@ -53,7 +54,7 @@ namespace ezyKnight.Hubs
                 if (@event.ShouldExecute(e.SignalTime))
                 {
                     Debug.WriteLine("Executed");
-                    @event.Execute();
+                    @event.Execute(e.SignalTime);
                     events.RemoveAt(i);
                 }
             }

@@ -120,10 +120,18 @@
   <ItemGroup>
     <Compile Include="App_Start\RegisterHubs.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Events\AttackEvent.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Events\DelayedChatMessage.cs" />
     <Compile Include="Hubs\GameHub.cs" />
+    <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Models\Orientation.cs" />
+    <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Spell.cs" />
+    <Compile Include="Models\Values.cs" />
+    <Compile Include="Models\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\PlayerTest.cs" />
   </ItemGroup>
@@ -154,7 +162,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

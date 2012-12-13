@@ -1,16 +1,15 @@
 ﻿using System;
 using Microsoft.AspNet.SignalR;
+using ezyKnight.Hubs;
 
-namespace ezyKnight.Hubs
+namespace ezyKnight.Events
 {
     public class DelayedChatMessage : IEvent
     {
-        public DateTime Created { get; private set; }
         public DateTime ExecuteTime { get; private set; }
         public DelayedChatMessage(int delay)
         {
-            Created = DateTime.Now;
-            ExecuteTime = Created.AddMilliseconds(delay);
+            ExecuteTime = DateTime.Now.AddMilliseconds(delay);
         }
 
         public string Message { get; set; }
@@ -20,7 +19,7 @@ namespace ezyKnight.Hubs
             return tick > ExecuteTime;
         }
 
-        public void Execute()
+        public void Execute(DateTime tick)
         {
             Executed = true;
             var context = GlobalHost.ConnectionManager.GetHubContext<GameHub>();

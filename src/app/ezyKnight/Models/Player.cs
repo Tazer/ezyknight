@@ -1,4 +1,6 @@
-﻿namespace ezyKnight.Hubs
+﻿using System.Collections.Generic;
+
+namespace ezyKnight.Models
 {
     public class Player
     {
@@ -35,22 +37,6 @@
 
             this.X = x;
             this.Y = y;
-        }
-        public Values Attack(Spell spell)
-        {
-            switch (Orientation)
-            {
-                case Orientation.Right:
-                    return new Values(X + spell.Range, Y);
-                case Orientation.Left:
-                    return new Values(X - spell.Range, Y);
-                case Orientation.Up:
-                    return new Values(X, Y - spell.Range);
-                case Orientation.Down:
-                    return new Values(X, Y + spell.Range);
-                default:
-                    return null;
-            }
         }
 
         public void Attacked(int damage)
