@@ -15,4 +15,6 @@ Gameloops / syncing / predicting
 http://www.koonsolo.com/news/dewitters-gameloop/  
 http://www.gamasutra.com/view/feature/3230/dead_reckoning_latency_hiding_for_.php
 https://developer.valvesoftware.com/wiki/Latency_Compensating_Methods_in_Client/Server_In-game_Protocol_Design_and_Optimization
-https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking
+https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking  
+http://gafferongames.com/game-physics/fix-your-timestep/  
+http://gafferongames.com/networking-for-game-programmers/what-every-programmer-needs-to-know-about-game-networking/
