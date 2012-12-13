@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
-using ezyKnight.Hubs;
 
 namespace ezyKnight
 {
@@ -13,7 +12,7 @@ namespace ezyKnight
     // visit http://go.microsoft.com/?LinkId=9394801
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static IDictionary<string, Player> Players = new Dictionary<string, Player>();
+ 
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();

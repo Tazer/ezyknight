@@ -41,21 +41,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AspNet.SignalR.Core">
-      <HintPath>..\..\..\packages\Microsoft.AspNet.SignalR.Core.1.0.0-alpha2\lib\net40\Microsoft.AspNet.SignalR.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.SignalR.Hosting.AspNet">
-      <HintPath>..\..\..\packages\Microsoft.AspNet.SignalR.Hosting.AspNet.1.0.0-alpha2\lib\net45\Microsoft.AspNet.SignalR.Hosting.AspNet.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.SignalR.Hosting.Common">
-      <HintPath>..\..\..\packages\Microsoft.AspNet.SignalR.Hosting.Common.1.0.0-alpha2\lib\net40\Microsoft.AspNet.SignalR.Hosting.Common.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -118,20 +106,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\RegisterHubs.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Hubs\GameHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\PlayerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\game.css" />
+    <Content Include="Content\map_bg.gif" />
     <Content Include="Content\player_sprite.gif" />
     <Content Include="Content\player_sprite_large.gif" />
     <Content Include="Global.asax" />
@@ -152,7 +138,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

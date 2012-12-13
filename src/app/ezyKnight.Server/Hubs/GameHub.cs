@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNet.SignalR.Hubs;
 
-namespace ezyKnight.Hubs
+namespace ezyKnight.Server.Hubs
 {
     public class Values
     {
@@ -111,38 +109,38 @@ namespace ezyKnight.Hubs
 
         public Task Join(string name, int userClass)
         {
-            if (MvcApplication.Players.Any(x => x.Value.Name == name))
+            if (Program.Players.Any(x => x.Value.Name == name))
             {
                 return Clients.Caller.addChatMessage("Player with that name already exsists");
             }
 
             var rndClass = new Random().Next(0, 4);
 
-            MvcApplication.Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Class = userClass });
+            Program.Players.Add(Context.ConnectionId, new Player() { Id = Context.ConnectionId, Name = name, Class = userClass });
             Groups.Add(Context.ConnectionId, "Players");
-            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
+            return Clients.Group("Players").joined(Program.Players.ToArray());
         }
 
         public Task SendPlayers()
         {
-            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
+            return Clients.Group("Players").joined(Program.Players.ToArray());
         }
 
         public Task Send(string message)
         {
-            return Clients.OthersInGroup("Players").addChatMessage(string.Format("[{0}] {1} -> {2}", DateTime.Now, MvcApplication.Players[Context.ConnectionId].Name, message));
+            return Clients.OthersInGroup("Players").addChatMessage(string.Format("[{0}] {1} -> {2}", DateTime.Now, Program.Players[Context.ConnectionId].Name, message));
         }
 
         public Task Attack(int spellId)
         {
-            if (!MvcApplication.Players.ContainsKey(Context.ConnectionId))
+            if (!Program.Players.ContainsKey(Context.ConnectionId))
             {
                 return Clients.Caller.addChatMessage("Player hasnt joined");
             }
 
             //Hard coding one spell now.
             var spell = new Spell() { Damage = new Values(10, 100), Name = "Melee", Range = 26, Speed = 100 };
-            var player = MvcApplication.Players[Context.ConnectionId];
+            var player = Program.Players[Context.ConnectionId];
 
             if(player.IsDead)
                 return Clients.Caller.addChatMessage("You are DEAD!");
@@ -153,7 +151,7 @@ namespace ezyKnight.Hubs
 
             var attackCords = player.Attack(spell);
 
-            var enemy = MvcApplication.Players.FirstOrDefault(x => x.Value.X == attackCords.Value1 && x.Value.Y == attackCords.Value2);
+            var enemy = Program.Players.FirstOrDefault(x => x.Value.X == attackCords.Value1 && x.Value.Y == attackCords.Value2);
 
             if (enemy.Value == null)
                 return Clients.Caller.addChatMessage("You missed with " + spell.Name);
@@ -162,18 +160,18 @@ namespace ezyKnight.Hubs
             enemy.Value.Attacked(spell.Damage.Value2);
 
 
-            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
+            return Clients.Group("Players").joined(Program.Players.ToArray());
         }
 
         public Task Move(int x, int y)
         {
-            if (!MvcApplication.Players.ContainsKey(Context.ConnectionId))
+            if (!Program.Players.ContainsKey(Context.ConnectionId))
             {
                 return Clients.Caller.addChatMessage("Player hasnt joined");
             }
-            var player = MvcApplication.Players[Context.ConnectionId];
+            var player = Program.Players[Context.ConnectionId];
 
-            if (MvcApplication.Players.Any(p => p.Value.X == x && p.Value.Y == y))
+            if (Program.Players.Any(p => p.Value.X == x && p.Value.Y == y))
                 return Clients.Caller.collision(player);
 
             if (x < 0 || y < 0 || y > MaxY || x > MaxX)
@@ -193,9 +191,9 @@ namespace ezyKnight.Hubs
 
         public override Task OnDisconnected()
         {
-            if (MvcApplication.Players.ContainsKey(Context.ConnectionId))
-                MvcApplication.Players.Remove(Context.ConnectionId);
-            return Clients.Group("Players").joined(MvcApplication.Players.ToArray());
+            if (Program.Players.ContainsKey(Context.ConnectionId))
+                Program.Players.Remove(Context.ConnectionId);
+            return Clients.Group("Players").joined(Program.Players.ToArray());
         }
     }
 }

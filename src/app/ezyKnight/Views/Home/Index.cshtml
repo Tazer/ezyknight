@@ -76,7 +76,7 @@
                 selectedClass = $(this).data("id");
             });
 
-
+            $.connection.hub.url = 'http://localhost:8081/signalr';
             $.connection.hub.start().done(function() { console.log("Now connected!"); }).fail(function() { console.log("Could not Connect!"); });
             var gameHub = $.connection.gameHub;
             //console.log(gameHub.client);
