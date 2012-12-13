@@ -116,8 +116,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\map_bg.png" />
     <Content Include="Content\game.css" />
-    <Content Include="Content\map_bg.gif" />
     <Content Include="Content\player_sprite.gif" />
     <Content Include="Content\player_sprite_large.gif" />
     <Content Include="Global.asax" />
