@@ -10,8 +10,7 @@ namespace ezyKnight.Hubs
 {
     public class GameHub : Hub
     {
-        private const int MaxX = 960;
-        private const int MaxY = 422;
+
 
 
         public Task Join(string name, int userClass)
@@ -56,7 +55,7 @@ namespace ezyKnight.Hubs
             if (!player.HasSpell(spell))
                 return Clients.Caller.addChatMessage("You dont have that spell");
 
-            World.AddEvent(new AttackEvent(player,spell));
+            World.AddEvent(new AttackEvent(player, spell));
 
 
 
@@ -64,25 +63,17 @@ namespace ezyKnight.Hubs
             return Clients.Group("Players").joined(World.GetPlayers().ToArray());
         }
 
-        public Task Move(int x, int y)
+        public void Move(int x, int y)
         {
             if (!World.GetPlayers().Any(p => p.ConnectionId == Context.ConnectionId))
             {
-                return Clients.Caller.addChatMessage("Player hasnt joined");
+                Clients.Caller.addChatMessage("Player hasnt joined");
+                return;
             }
             var player = World.GetPlayers().FirstOrDefault(p => p.ConnectionId == Context.ConnectionId);
 
-            if (World.GetPlayers().Any(p => p.X == x && p.Y == y))
-                return Clients.Caller.collision(player);
+            World.AddEvent(new MoveEvent(player, x, y));
 
-            if (x < 0 || y < 0 || y > MaxY || x > MaxX)
-                return Clients.Caller.collision(player);
-
-            if (player.IsDead)
-                return Clients.Caller.addChatMessage("You are DEAD!");
-
-            player.MoveTo(x, y);
-            return Clients.Group("Players").moved(player);
         }
 
         public override Task OnConnected()

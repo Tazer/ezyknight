@@ -26,11 +26,11 @@ namespace ezyKnight.Events
 
         public void Execute(DateTime tick)
         {
-            
-            if(_attackHere.All(x => x.Executed))
+
+            if (_attackHere.All(x => x.Executed))
                 Executed = true;
 
-            var context = GlobalHost.ConnectionManager.GetHubContext<GameHub>(); 
+            var context = GlobalHost.ConnectionManager.GetHubContext<GameHub>();
             foreach (var attackCord in _attackHere.Where(x => tick > x.Delay && !x.Executed))
             {
                 attackCord.Executed = true;
