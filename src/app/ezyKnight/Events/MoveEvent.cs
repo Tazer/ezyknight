@@ -17,6 +17,7 @@ namespace ezyKnight.Events
         public MoveEvent(Player player,int x,int y)
         {
             _player = player;
+            _player.IsMoving = true;
             _x = x;
             _y = y;
             ExecuteTime = DateTime.Now;
@@ -31,6 +32,10 @@ namespace ezyKnight.Events
         public void Execute(DateTime tick)
         {
             Executed = true;
+
+            if(!_player.IsMoving)
+                return;
+
             var context = GlobalHost.ConnectionManager.GetHubContext<GameHub>();
             if (World.GetPlayers().Any(p => p.X == _x && p.Y == _y)){
                 context.Clients.Client(_player.ConnectionId).collision(_player);

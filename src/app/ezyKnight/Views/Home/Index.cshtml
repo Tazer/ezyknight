@@ -68,6 +68,7 @@
         var playerY = 0;
         var players = [];
         var hasJoined = false;
+        var isMoving = false;
         $(function() {
 
             $(".playerclass").click(function() {
@@ -129,10 +130,19 @@
                     });
             });
 
-            document.onkeyup = function(e) {
+            document.onkeyup = function (e) {
                 if (hasJoined == false) {
                     return;
                 }
+                isMoving = false;
+                gameHub.server.stopMove();
+            };
+
+            document.onkeydown = function(e) {
+                if (hasJoined == false) {
+                    return;
+                }
+                isMoving = true;
                 console.log(e.keyCode);
                 switch (e.keyCode) {
                 case 87:
@@ -163,6 +173,9 @@
 
         function animatePlayer(player) {
             //orientation:  Up = 0, Down = 1, Left = 2,Right = 3
+            if (!isMoving)
+                return;
+
             var tick = Math.round(config.tileSize / Math.round((config.walkingSpeed / config.refreshRate)));
             switch (player.orientation) {
             case 0:

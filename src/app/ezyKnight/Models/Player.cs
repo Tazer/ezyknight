@@ -12,6 +12,7 @@ namespace ezyKnight.Models
         public int Class { get; set; }
         public Orientation Orientation { get; set; }
         public bool IsDead = false;
+        public bool IsMoving = false;
         public Values Health = new Values(100, 100);
 
         public bool HasSpell(Spell spell)

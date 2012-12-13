@@ -76,6 +76,12 @@ namespace ezyKnight.Hubs
 
         }
 
+        public void StopMove()
+        {
+            var player = World.GetPlayers().FirstOrDefault(p => p.ConnectionId == Context.ConnectionId);
+            player.IsMoving = false;
+        }
+
         public override Task OnConnected()
         {
             return Clients.Group("Players").newconnection(Context.ConnectionId);
