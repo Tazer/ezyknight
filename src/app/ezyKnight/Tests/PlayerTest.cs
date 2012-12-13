@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using NUnit.Framework;
-using ezyKnight.Server.Hubs;
+using ezyKnight.Hubs;
 
 namespace ezyKnight.Tests
 {

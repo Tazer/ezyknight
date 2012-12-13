@@ -1,5 +1,4 @@
-﻿@using System.Configuration
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html>
 <head>
@@ -13,7 +12,7 @@
     </div>
     <script src="/Scripts/jquery-1.6.4.min.js" type="text/javascript"></script>
     <script src="/Scripts/jquery.signalR-1.0.0-alpha2.min.js" type="text/javascript"></script>
-    <script src="@ConfigurationManager.AppSettings["signalr.host.hubs"]" type="text/javascript"></script>
+    <script src="/signalr/hubs" type="text/javascript"></script>
     @RenderSection("script")
 </body>
-</html> 
+</html>

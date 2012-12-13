@@ -6,7 +6,7 @@
 
 <h2>ezyKnight</h2>
 <img src="/Content/player_sprite.gif" id="imgPlayer" style="display: none;" />
-<img src="/Content/map_bg.png" id="imgMapbg" style="display: none;" />
+<img src="/Content/map_bg.gif" id="imgMapbg" style="display: none;" />
 <div id="game-wrapper">
 
     <div id="class-wrapper">
@@ -76,7 +76,7 @@
                 selectedClass = $(this).data("id");
             });
 
-            $.connection.hub.url = 'http://localhost:8081/signalr';
+
             $.connection.hub.start().done(function() { console.log("Now connected!"); }).fail(function() { console.log("Could not Connect!"); });
             var gameHub = $.connection.gameHub;
             //console.log(gameHub.client);

@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{33F353
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ezyKnight.Server", "src\app\ezyKnight.Server\ezyKnight.Server.csproj", "{BA4E79F2-2F80-449A-B636-D70BB3D21E76}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,10 +20,6 @@ Global
 		{B9F8B041-FA82-45B6-B7E0-A81E267B3E71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9F8B041-FA82-45B6-B7E0-A81E267B3E71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9F8B041-FA82-45B6-B7E0-A81E267B3E71}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA4E79F2-2F80-449A-B636-D70BB3D21E76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA4E79F2-2F80-449A-B636-D70BB3D21E76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA4E79F2-2F80-449A-B636-D70BB3D21E76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA4E79F2-2F80-449A-B636-D70BB3D21E76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
