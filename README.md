@@ -17,4 +17,8 @@ http://www.gamasutra.com/view/feature/3230/dead_reckoning_latency_hiding_for_.ph
 https://developer.valvesoftware.com/wiki/Latency_Compensating_Methods_in_Client/Server_In-game_Protocol_Design_and_Optimization
 https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking  
 http://gafferongames.com/game-physics/fix-your-timestep/  
-http://gafferongames.com/networking-for-game-programmers/what-every-programmer-needs-to-know-about-game-networking/
+http://gafferongames.com/networking-for-game-programmers/what-every-programmer-needs-to-know-about-game-networking/  
+
+Websocket server setup
+==
+http://stackoverflow.com/questions/9982600/limiting-performance-factors-of-websocket-in-asp-net-4-5
