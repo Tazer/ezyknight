@@ -21,4 +21,7 @@ http://gafferongames.com/networking-for-game-programmers/what-every-programmer-n
 
 Websocket server setup
 ==
-http://stackoverflow.com/questions/9982600/limiting-performance-factors-of-websocket-in-asp-net-4-5
+http://stackoverflow.com/questions/9982600/limiting-performance-factors-of-websocket-in-asp-net-4-5  
+Open source game server
+== 
+https://github.com/mangosR2/mangos
