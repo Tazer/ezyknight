@@ -20,7 +20,7 @@ namespace ezyKnight.Events
             _player.IsMoving = true;
             _x = x;
             _y = y;
-            ExecuteTime = DateTime.UtcNow;
+            ExecuteTime = DateTime.Now;
         }
 
         public bool ShouldExecute(DateTime tick)

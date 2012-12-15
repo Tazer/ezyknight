@@ -9,7 +9,7 @@ namespace ezyKnight.Events
         public DateTime ExecuteTime { get; private set; }
         public DelayedChatMessage(int delay)
         {
-            ExecuteTime = DateTime.UtcNow.AddMilliseconds(delay);
+            ExecuteTime = DateTime.Now.AddMilliseconds(delay);
         }
 
         public string Message { get; set; }
