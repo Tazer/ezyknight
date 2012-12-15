@@ -20,7 +20,7 @@ namespace ezyKnight.Events
             _player.IsMoving = true;
             _x = x;
             _y = y;
-            ExecuteTime = DateTime.Now;
+            ExecuteTime = DateTime.UtcNow;
         }
 
         public bool ShouldExecute(DateTime tick)
@@ -51,7 +51,8 @@ namespace ezyKnight.Events
                 context.Clients.Client(_player.ConnectionId).addChatMessage("You are DEAD!");
                 return;
             }
-
+            if (!_player.IsMoving)
+                return;
             _player.MoveTo(_x, _y);
             context.Clients.Group("Players").moved(_player);
         }

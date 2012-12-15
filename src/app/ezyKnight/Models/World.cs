@@ -41,10 +41,9 @@ namespace ezyKnight.Models
         void gameTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             //HAndle all shit here.
-            _world.gameTimer.Stop();
             if (events.Count <= 0)
             {
-                _world.gameTimer.Start();
+
                 return;
             }
 
@@ -54,20 +53,11 @@ namespace ezyKnight.Models
                 if (@event.ShouldExecute(e.SignalTime))
                 {
                     Debug.WriteLine("Executed");
-                    @event.Execute(e.SignalTime);
                     events.RemoveAt(i);
+                    @event.Execute(e.SignalTime);
+
                 }
             }
-            _world.gameTimer.Start();
-            //foreach (var @event in events.Where(x => !x.Executed))
-            //{
-            //    if (@event.ShouldExecute(e.SignalTime))
-            //    {
-            //        Debug.WriteLine("Executed");
-            //        @event.Execute();
-            //    }
-
-            //}
         }
 
         public static void RemovePlayer(Player player)
