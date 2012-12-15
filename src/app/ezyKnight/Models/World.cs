@@ -43,7 +43,6 @@ namespace ezyKnight.Models
             //HAndle all shit here.
             if (events.Count <= 0)
             {
-
                 return;
             }
 

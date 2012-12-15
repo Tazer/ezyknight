@@ -68,7 +68,6 @@
         var playerY = 0;
         var players = [];
         var hasJoined = false;
-        var isMoving = true;
         var heldKeys = {};
         var lastEvent;
         $(function () {
@@ -117,6 +116,7 @@
                         this.newX = player.X;
                         this.newY = player.Y;
                         this.orientation = player.Orientation;
+                        console.log(this);
                     }
                 });
             };
@@ -138,8 +138,6 @@
                 }
                 lastEvent = null;
                 delete heldKeys[event.keyCode];
-                isMoving = false;
-                gameHub.server.stopMove();
             };
 
             document.onkeydown = function (e) {
@@ -147,8 +145,7 @@
                     return;
                 }
 
-                if (!isMoving)
-                    return;
+
 
                 if (lastEvent && lastEvent.keyCode == event.keyCode) {
                     return;
@@ -179,7 +176,6 @@
                 } else {
                     gameHub.server.move(playerX, playerY).fail(function (error) { console.log(error); });
                 }
-                isMoving = false;
             };
 
         });
@@ -278,7 +274,6 @@
             requestAnimFrame(gameloop);
             updatePlayers();
             draw();
-            isMoving = true;
         }
 
         function init() {
